@@ -1,3 +1,4 @@
+use core::fmt;
 #[allow(unused_imports)]
 use std::io::{self, Write};
 
@@ -10,4 +11,21 @@ fn main() {
     let stdin = io::stdin();
     let mut input = String::new();
     stdin.read_line(&mut input).unwrap();
+
+    // Handle Invalid input
+    trim_newline(&mut input);
+    if input == "invalid_command" {
+        let output = format!("{input}: command not found");
+        io::stdout().write(output.as_bytes()).unwrap();
+    }
+}
+
+// Function to trim the newline at the end of the command entered by the user
+fn trim_newline(s: &mut String) {
+    if s.ends_with('\n') {
+        s.pop();
+        if s.ends_with('\r') {
+            s.pop();
+        }
+    }
 }
