@@ -14,10 +14,8 @@ fn main() {
 
     // Handle Invalid input
     trim_newline(&mut input);
-    if input == "invalid_command" {
-        let output = format!("{input}: command not found");
-        io::stdout().write(output.as_bytes()).unwrap();
-    }
+    let output = format!("{input}: command not found");
+    io::stdout().write(output.as_bytes()).unwrap();
 }
 
 // Function to trim the newline at the end of the command entered by the user
