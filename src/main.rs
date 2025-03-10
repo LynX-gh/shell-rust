@@ -21,7 +21,12 @@ impl StringExt for String {
 
 fn handle_user_input(inputs: &mut VecDeque<&str>) -> String {
     if let Some(command) = inputs.pop_front() {
+        // println!("{:?}", inputs);
         match command {
+            "echo" => {
+                let output = if let Some(output) = inputs.pop_front() { output } else { "" };
+                format!("{}", output)
+            },
             "exit" => {
                 let exit_code = if let Some(exit_code) = inputs.pop_front() { exit_code.parse::<i32>().unwrap_or(0) } else { 0 };
                 std::process::exit(exit_code);
@@ -42,7 +47,7 @@ fn main() {
         let mut input = String::new();
         io::stdin().read_line(&mut input).unwrap();
         input.trim_newline();
-        let mut inputs = input.split_whitespace().collect::<VecDeque<_>>();
+        let mut inputs = input.splitn(2, ' ').collect::<VecDeque<_>>();
 
         // Handle User Input
         let output = handle_user_input(&mut inputs);
