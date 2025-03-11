@@ -23,6 +23,15 @@ fn handle_user_input(inputs: &mut VecDeque<&str>) -> String {
     if let Some(command) = inputs.pop_front() {
         // println!("{:?}", inputs);
         match command {
+            "type" => {
+                let command = if let Some(command) = inputs.pop_front() { command } else { "" };
+                match command {
+                    "echo" => "echo is a shell builtin".to_string(),
+                    "exit" => "exit is a shell builtin".to_string(),
+                    "type" => "type is a shell builtin".to_string(),
+                    _ => format!("{command}: not found"),
+                }
+            },
             "echo" => {
                 let output = if let Some(output) = inputs.pop_front() { output } else { "" };
                 format!("{}", output)
