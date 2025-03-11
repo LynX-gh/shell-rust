@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
 use core::fmt;
+use std::env;
 use std::io::{self, Write};
 use std::collections::VecDeque;
 
@@ -48,6 +49,17 @@ fn handle_user_input(inputs: &mut VecDeque<&str>) -> String {
 }
 
 fn main() {
+    // Get the PATH environment variable
+    let path = match env::var("PATH") {
+        Ok(val) => val,
+        Err(e) => panic!("could not interpret PATH: {}", e),
+    };
+
+    // Split PATH using the appropriate separator for the OS
+    let path_separator = if cfg!(windows) { ';' } else { ':' };
+    let path_entries: Vec<&str> = path.split(path_separator).collect();
+    println!("PATH entries: {:?}", path_entries);
+
     loop {
         print!("$ ");
         io::stdout().flush().unwrap();
