@@ -1,4 +1,5 @@
 mod builtins;
+mod external_exec;
 
 #[allow(unused_imports)]
 use core::fmt;
@@ -35,7 +36,7 @@ fn handle_user_input(inputs: &mut VecDeque<&str>) -> String {
                 let exit_code = if let Some(exit_code) = inputs.pop_front() { exit_code.parse::<i32>().unwrap_or(0) } else { 0 };
                 std::process::exit(exit_code);
             },
-            _ => format!("{command}: command not found"),
+            _ => external_exec::run_external_executable(command, inputs.clone())
         }
     } else {
         "".to_string()
@@ -46,11 +47,11 @@ fn main() {
     loop {
         print!("$ ");
         io::stdout().flush().unwrap();
-        
+
         // Wait for user input
         let mut input = String::new();
         match io::stdin().read_line(&mut input) {
-            Ok(n) => {
+            Ok(_) => {
                 input.trim_newline();
                 let mut inputs = input.splitn(2, ' ').collect::<VecDeque<_>>();
 
@@ -60,7 +61,7 @@ fn main() {
             },
             Err(error) => println!("error: {}", error),
         }
-        
+
         // Print a newline
         io::stdout().write("\n".as_bytes()).unwrap();
     }
