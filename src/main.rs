@@ -1,6 +1,7 @@
+mod builtins;
+
 #[allow(unused_imports)]
 use core::fmt;
-use std::env;
 use std::io::{self, Write};
 use std::collections::VecDeque;
 
@@ -25,17 +26,10 @@ fn handle_user_input(inputs: &mut VecDeque<&str>) -> String {
         // println!("{:?}", inputs);
         match command {
             "type" => {
-                let command = if let Some(command) = inputs.pop_front() { command } else { "" };
-                match command {
-                    "echo" => "echo is a shell builtin".to_string(),
-                    "exit" => "exit is a shell builtin".to_string(),
-                    "type" => "type is a shell builtin".to_string(),
-                    _ => format!("{command}: not found"),
-                }
+                builtins::type_builtin::type_builtin(inputs)
             },
             "echo" => {
-                let output = if let Some(output) = inputs.pop_front() { output } else { "" };
-                format!("{}", output)
+                builtins::echo_builtin::echo_builtin(inputs)
             },
             "exit" => {
                 let exit_code = if let Some(exit_code) = inputs.pop_front() { exit_code.parse::<i32>().unwrap_or(0) } else { 0 };
@@ -49,31 +43,24 @@ fn handle_user_input(inputs: &mut VecDeque<&str>) -> String {
 }
 
 fn main() {
-    // Get the PATH environment variable
-    let path = match env::var("PATH") {
-        Ok(val) => val,
-        Err(e) => panic!("could not interpret PATH: {}", e),
-    };
-
-    // Split PATH using the appropriate separator for the OS
-    let path_separator = if cfg!(windows) { ';' } else { ':' };
-    let path_entries: Vec<&str> = path.split(path_separator).collect();
-    println!("PATH entries: {:?}", path_entries);
-
     loop {
         print!("$ ");
         io::stdout().flush().unwrap();
-
+        
         // Wait for user input
         let mut input = String::new();
-        io::stdin().read_line(&mut input).unwrap();
-        input.trim_newline();
-        let mut inputs = input.splitn(2, ' ').collect::<VecDeque<_>>();
+        match io::stdin().read_line(&mut input) {
+            Ok(n) => {
+                input.trim_newline();
+                let mut inputs = input.splitn(2, ' ').collect::<VecDeque<_>>();
 
-        // Handle User Input
-        let output = handle_user_input(&mut inputs);
-        io::stdout().write(output.as_bytes()).unwrap();
-
+                // Handle User Input
+                let output = handle_user_input(&mut inputs);
+                io::stdout().write(output.as_bytes()).unwrap();
+            },
+            Err(error) => println!("error: {}", error),
+        }
+        
         // Print a newline
         io::stdout().write("\n".as_bytes()).unwrap();
     }
