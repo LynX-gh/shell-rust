@@ -6,9 +6,7 @@ use std::collections::VecDeque;
 pub(crate) fn type_builtin(inputs: &mut VecDeque<&str>) -> String {
     let command = if let Some(command) = inputs.pop_front() { command } else { "" };
     match command {
-        "echo" => "echo is a shell builtin".to_string(),
-        "exit" => "exit is a shell builtin".to_string(),
-        "type" => "type is a shell builtin".to_string(),
+        "echo" | "exit" | "type" | "pwd" => format!("{} is a shell builtin", command),
         _ => {
             // Get the PATH environment variable
             let path = match env::var("PATH") {
