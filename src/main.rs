@@ -26,6 +26,9 @@ fn handle_user_input(inputs: &mut VecDeque<&str>) -> String {
     if let Some(command) = inputs.pop_front() {
         // println!("{:?}", inputs);
         match command {
+            "pwd" => {
+                builtins::directory_builtin::pwd_builtin()
+            },
             "type" => {
                 builtins::type_builtin::type_builtin(inputs)
             },
