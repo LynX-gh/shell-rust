@@ -26,6 +26,9 @@ fn handle_user_input(inputs: &mut VecDeque<&str>) -> String {
     if let Some(command) = inputs.pop_front() {
         // println!("{:?}", inputs);
         match command {
+            "cd" => {
+                builtins::directory_builtin::cd_builtin(inputs)
+            },
             "pwd" => {
                 builtins::directory_builtin::pwd_builtin()
             },
@@ -64,8 +67,5 @@ fn main() {
             },
             Err(error) => println!("error: {}", error),
         }
-
-        // Print a newline
-        io::stdout().write("\n".as_bytes()).unwrap();
     }
 }
